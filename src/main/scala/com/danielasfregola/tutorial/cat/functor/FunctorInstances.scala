@@ -6,8 +6,15 @@ import com.danielasfregola.tutorial.cat._
 
 object FunctorInstances {
 
-  implicit val maybeFunctor: Functor[Maybe] = ???
+  implicit val maybeFunctor: Functor[Maybe] = new Functor[Maybe] {
+    override def map[A, B](boxA: Maybe[A])(f: A => B): Maybe[B] = map(boxA)(f)
+  }
 
-  implicit val zeroOrMoreFunctor: Functor[ZeroOrMore] = ???
+  implicit val zeroOrMoreFunctor: Functor[ZeroOrMore] = new Functor[ZeroOrMore] {
+    override def map[A, B](boxA: ZeroOrMore[A])(f: A => B): ZeroOrMore[B] = boxA match {
+      case Zero => Zero
+      case OneOrMore(head, tail) => OneOrMore(f(head), map(tail)(f))
+    }
+  }
 
 }
